@@ -1,0 +1,38 @@
+using TaskScheduler.Application.Commands.CleanOldOrders;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using TaskScheduler.Infrastructure.Persistence;
+
+namespace TaskScheduler.Infrastructure;
+
+public class CleanOldOrdersHandler 
+    : IRequestHandler<CleanOldOrdersCommand, int>
+{
+    private readonly AppDbContext _context;
+
+    public CleanOldOrdersHandler(AppDbContext context)
+        => _context = context;
+
+    public async Task<int> Handle(
+        CleanOldOrdersCommand request,
+        CancellationToken cancellationToken)
+    {
+        // بنحسب التاريخ اللي قبله يعتبر قديم
+        var cutoffDate = DateTime.UtcNow.AddDays(-request.DaysOld);
+
+        // بنجيب الأوردرات القديمة
+        var oldOrders = await _context.Orders
+            .Where(o => o.CreatedAt < cutoffDate)
+            .ToListAsync(cancellationToken);
+
+        if (!oldOrders.Any())
+            return 0;
+
+        // بنمسحهم
+        _context.Orders.RemoveRange(oldOrders);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        // بنرجع عدد اللي اتمسح
+        return oldOrders.Count;
+    }
+}
