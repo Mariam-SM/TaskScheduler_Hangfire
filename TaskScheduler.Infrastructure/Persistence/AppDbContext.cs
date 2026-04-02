@@ -12,22 +12,21 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // بنضيف بعض الداتا للتيست
         modelBuilder.Entity<Order>().HasData(
             new Order
             {
                 Id = 1,
                 CustomerName = "Ahmed Ali",
                 TotalPrice = 500,
-                CreatedAt = DateTime.UtcNow.AddDays(-60), // قديم 60 يوم
+                CreatedAt = DateTime.UtcNow.AddDays(-60), // old -> 60 days ago 
                 Status = "Completed"
             },
             new Order
             {
                 Id = 2,
-                CustomerName = "Sara Mohamed",
+                CustomerName = "Mariam Sayed",
                 TotalPrice = 300,
-                CreatedAt = DateTime.UtcNow.AddDays(-5), // جديد
+                CreatedAt = DateTime.UtcNow.AddDays(-5), // new
                 Status = "Pending"
             }
         );

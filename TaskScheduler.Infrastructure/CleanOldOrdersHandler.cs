@@ -17,10 +17,8 @@ public class CleanOldOrdersHandler
         CleanOldOrdersCommand request,
         CancellationToken cancellationToken)
     {
-        // بنحسب التاريخ اللي قبله يعتبر قديم
         var cutoffDate = DateTime.UtcNow.AddDays(-request.DaysOld);
 
-        // بنجيب الأوردرات القديمة
         var oldOrders = await _context.Orders
             .Where(o => o.CreatedAt < cutoffDate)
             .ToListAsync(cancellationToken);
@@ -28,11 +26,9 @@ public class CleanOldOrdersHandler
         if (!oldOrders.Any())
             return 0;
 
-        // بنمسحهم
         _context.Orders.RemoveRange(oldOrders);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // بنرجع عدد اللي اتمسح
         return oldOrders.Count;
     }
 }

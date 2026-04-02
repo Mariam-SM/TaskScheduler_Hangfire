@@ -15,11 +15,10 @@ public class SendWelcomeEmailHandler
         SendWelcomeEmailCommand request,
         CancellationToken cancellationToken)
     {
-        // بيبعت الإيميل عن طريق الـ Interface
         await _emailService.SendWelcomeEmailAsync(
             request.UserEmail,
             request.UserName);
 
-        return Unit.Value; // زي return void في الـ MediatR
+        return Unit.Value;  
     }
 }
