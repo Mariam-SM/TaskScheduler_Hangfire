@@ -1,16 +1,16 @@
-using TaskScheduler.Application.Commands.CleanOldOrders;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TaskScheduler.Infrastructure.Persistence;
+using TaskScheduler.Application.Commands.CleanOldOrders;
+using TaskScheduler.Application.Interfaces;
 
 namespace TaskScheduler.Infrastructure;
 
 public class CleanOldOrdersHandler 
     : IRequestHandler<CleanOldOrdersCommand, int>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public CleanOldOrdersHandler(AppDbContext context)
+    public CleanOldOrdersHandler(IAppDbContext context)
         => _context = context;
 
     public async Task<int> Handle(

@@ -1,5 +1,4 @@
 using Hangfire;
-using Hangfire.MemoryStorage;
 using Microsoft.EntityFrameworkCore;
 using TaskScheduler.Application.Interfaces;
 using TaskScheduler.Infrastructure.Persistence;
@@ -11,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(
@@ -19,6 +20,7 @@ builder.Services.AddMediatR(cfg =>
 
     cfg.RegisterServicesFromAssembly(
         typeof(TaskScheduler.Infrastructure.CleanOldOrdersHandler).Assembly);
+
 });
 
 builder.Services.AddHangfire(config =>
